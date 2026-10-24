@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Prescription Organizer</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .login-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px #00000020;
+            width: 320px;
+            max-width: 85%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2457a7;
+        }
+
+        input {
+            width: 100%;
+            padding: 11px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2457a7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        p {
+            text-align: center;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-box">
+        <h2>Prescription Organizer</h2>
+        <p>Login to your account</p>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <input type="text" name="username"
+                   placeholder="Enter username" required>
+
+            <input type="password" name="password"
+                   placeholder="Enter password" required>
+
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Prescription</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            padding: 30px;
+        }
+        form {
+            background: white;
+            max-width: 500px;
+            margin: auto;
+            padding: 25px;
+            border-radius: 12px;
+        }
+        h1 {
+            text-align: center;
+            color: #2457a7;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #2457a7;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        <h1>Edit Prescription</h1>
+
+        <label>Patient Name</label>
+        <input type="text" name="patient_name"
+               value="{{ prescription.patient_name }}" required>
+
+        <label>Doctor Name</label>
+        <input type="text" name="doctor_name"
+               value="{{ prescription.doctor_name }}" required>
+
+        <label>Disease</label>
+        <input type="text" name="disease"
+               value="{{ prescription.disease }}" required>
+
+        <label>Prescription Date</label>
+        <input type="date" name="prescription_date"
+               value="{{ prescription.prescription_date|date:'Y-m-d' }}" required>
+
+        <label>Medicines</label>
+        <textarea name="medicines" required>{{ prescription.medicines }}</textarea>
+
+        <label>Notes</label>
+        <textarea name="notes">{{ prescription.notes }}</textarea>
+
+        <button type="submit">Update Prescription</button>
+    </form>
+</body>
+</html>

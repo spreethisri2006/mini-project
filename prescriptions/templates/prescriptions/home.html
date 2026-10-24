@@ -1,0 +1,264 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription History Organizer</title>
+    
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f7fb;
+        margin: 0;
+        padding: 30px;
+        color: #263445;
+    }
+
+    h1 {
+        text-align: center;
+        color: #2457a7;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .prescription-card {
+        background: white;
+        max-width: 650px;
+        margin: 20px auto;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 3px 12px #00000015;
+    }
+
+    .prescription-card h3 {
+        color: #2457a7;
+    }
+
+    .prescription-card p {
+        line-height: 1.6;
+    }
+
+    hr {
+        border: 0;
+        border-top: 1px solid #ddd;
+    }
+        /* Responsive Design */
+    @media (max-width: 600px) {
+        body {
+            padding: 12px;
+        }
+
+        nav {
+            gap: 12px;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .prescription-card {
+            padding: 16px;
+            margin: 15px auto;
+        }
+
+        input, button {
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+    }
+
+    a:hover, button:hover {
+        opacity: 0.85;
+    }
+    
+@media print {
+    nav, button, a, form {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+        padding: 0;
+    }
+
+    .prescription-card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        page-break-inside: avoid;
+    }
+}
+
+</style>
+
+</head>
+<body>
+    <nav style="background: #2457a7; padding: 15px;
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap;">
+
+    <h2 style="color: white; margin: 0;">
+        Prescription Organizer
+    </h2>
+
+    <div>
+        <a href="{% url 'home' %}"
+           style="color: white; text-decoration: none;
+           margin: 10px;">Home</a>
+
+        <a href="{% url 'add_prescription' %}"
+           style="color: white; text-decoration: none;
+           margin: 10px;">Add Prescription</a>
+
+        <a href="/admin/"
+           style="color: white; text-decoration: none;
+           margin: 10px;">Admin</a>
+           
+        <a href="{% url 'logout' %}"
+           style="color: white; text-decoration: none;
+           margin: 10px;">Logout</a>
+    </div>
+
+</nav>
+{% if messages %}
+    {% for message in messages %}
+        <div style="background: #d4edda;
+                    color: #155724;
+                    padding: 12px;
+                    margin: 15px auto;
+                    text-align: center;
+                    border-radius: 6px;
+                    max-width: 600px;">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+    <h1>Prescription History Organizer</h1>
+    <h2>Prescription History</h2>
+    
+<div style="display: flex; justify-content: center; gap: 20px;
+            flex-wrap: wrap; margin: 25px auto;">
+
+    <div style="background: #2457a7; color: white; padding: 20px;
+                border-radius: 10px; min-width: 150px; text-align: center;">
+        <h3>Total Prescriptions</h3>
+        <h2>{{ total_prescriptions }}</h2>
+    </div>
+
+    <div style="background: #16856b; color: white; padding: 20px;
+                border-radius: 10px; min-width: 150px; text-align: center;">
+        <h3>Total Patients</h3>
+        <h2>{{ total_patients }}</h2>
+    </div>
+
+    <div style="background: #8b5bb5; color: white; padding: 20px;
+                border-radius: 10px; min-width: 150px; text-align: center;">
+        <h3>Total Doctors</h3>
+        <h2>{{ total_doctors }}</h2>
+    </div>
+
+</div>
+
+    
+<form method="GET" style="text-align: center; margin: 20px;">
+    <input
+        type="text"
+        name="search"
+        placeholder="Search patient, doctor or disease..."
+        value="{{ query }}"
+        style="padding: 12px; width: 280px; max-width: 90%;"
+    >
+    <label for="date">Filter by Date:</label>
+    <input
+        type="date"
+        id="date"
+        name="date"
+        value="{{ selected_date }}"
+        style="padding: 10px; margin: 8px;"
+    >
+
+    <button
+        type="submit"
+        style="padding: 12px 18px; background: #2457a7;
+        color: white; border: none; cursor: pointer;"
+    >
+        Search
+    </button>
+</form>
+
+<div style="text-align: center; margin: 20px;">
+    <a href="{% url 'home' %}"
+       style="padding: 12px 18px; background: #6c757d;
+       color: white; text-decoration: none; border-radius: 4px;">
+        Clear
+    </a>
+</div>
+
+
+<div style="text-align: center; margin: 20px;">
+    <a href="{% url 'add_prescription' %}"
+       style="background: #2457a7; color: white; padding: 12px 22px;
+       text-decoration: none; border-radius: 6px;">
+        + Add Prescription
+    </a>
+</div>
+
+<div style="text-align: center; margin: 20px;">
+    <a href="{% url 'export_prescriptions' %}"
+       style="background: #198754; color: white;
+       padding: 12px 22px; text-decoration: none;
+       border-radius: 6px;">
+        Export Prescriptions (CSV)
+    </a>
+</div>
+
+
+
+    {% for prescription in prescriptions %}
+        <div class="prescription-card">
+                <h3>{{ prescription.patient_name }}</h3>
+                <a href="{% url 'patient_history' prescription.patient_name %}"
+   style="display: inline-block; background: #2563eb;
+   color: white; padding: 9px 16px; text-decoration: none;
+   border-radius: 5px; margin-bottom: 10px;">
+    View Patient History
+</a>
+            <p>Doctor: {{ prescription.doctor_name }}</p>
+            <p>Disease: {{ prescription.disease }}</p>
+            <p>Date: {{ prescription.prescription_date }}</p>
+            <p>Medicines: {{ prescription.medicines }}</p>
+            <p>Notes: {{ prescription.notes }}</p>
+            
+<a href="{% url 'edit_prescription' prescription.pk %}"
+   style="display: inline-block; background: #e6a23c;
+   color: white; padding: 9px 16px; text-decoration: none;
+   border-radius: 5px;">
+    Edit
+</a>
+
+<a href="{% url 'delete_prescription' prescription.pk %}"
+   style="display: inline-block; background: #dc3545;
+   color: white; padding: 9px 16px; text-decoration: none;
+   border-radius: 5px; margin-left: 8px;">
+    Delete
+</a>
+
+<button onclick="window.print()"
+        style="background: #198754; color: white;
+        padding: 9px 16px; border: none;
+        border-radius: 5px; margin-left: 8px;
+        cursor: pointer;">
+    Print
+</button>
+
+
+
+            <hr>
+        </div>
+    {% empty %}
+        <p>No prescriptions found.</p>
+    {% endfor %}
+</body>
+</html>
